@@ -1,0 +1,85 @@
+name: ci-pr
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+env:
+  CI_BUILD: true
+jobs:
+  build-test-release:
+    runs-on: ubuntu-latest
+    env:
+      CONFIGURATION: Release
+      TRX_DIRECTORY: ./test/output/Release
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of sonarqube analysis
+      - name: Bootstrap dotnet dependencies
+        uses: ./.github/workflows/composite/bootstrap-dotnet
+        with:
+          github-packages: true
+          github-username: ${{ github.actor }}
+          github-secret: ${{ secrets.GITHUB_TOKEN }}
+      - name: Execute dotnet build
+        run: >
+          dotnet build .
+          --configuration ${{ env.CONFIGURATION }}
+      - name: Execute dotnet test
+        run: >
+          dotnet test .
+          --configuration ${{ env.CONFIGURATION }}
+          --results-directory ${{ env.TRX_DIRECTORY }}
+          --settings coverlet.runsettings
+          --collect:"XPlat Code Coverage"
+          --logger:trx
+          --no-restore
+      - name: Parse TRX File
+        if: ${{ always() }}
+        uses: solarisin/trx-parser@dev3
+        id: trx-parser
+        with:
+          TRX_PATH: ${{ env.TRX_DIRECTORY }}
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BADGE_STYLE: emoji
+  build-test-debug:
+    runs-on: windows-latest
+    env:
+      CONFIGURATION: Debug
+      TRX_DIRECTORY: ./test/output/Debug
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of sonarqube analysis
+      - name: Bootstrap dotnet dependencies
+        uses: ./.github/workflows/composite/bootstrap-dotnet
+        with:
+          sdk: true
+          sdk-version: 6.0.x
+          msbuild: false
+          github-packages: true
+          github-username: ${{ github.actor }}
+          github-secret: ${{ secrets.GITHUB_TOKEN }}
+      - name: Execute dotnet build
+        run: >
+          dotnet build .
+          --configuration ${{ env.CONFIGURATION }}
+      - name: Execute dotnet test
+        run: >
+          dotnet test .
+          --configuration ${{ env.CONFIGURATION }}
+          --results-directory ${{ env.TRX_DIRECTORY }}
+          --settings coverlet.runsettings
+          --collect:"XPlat Code Coverage"
+          --logger:trx
+          --no-restore
+      - name: Parse TRX File
+        if: ${{ always() }}
+        uses: solarisin/trx-parser@dev3
+        id: trx-parser
+        with:
+          TRX_PATH: ${{ env.TRX_DIRECTORY }}
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BADGE_STYLE: emoji

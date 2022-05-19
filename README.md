@@ -1,2 +1,3 @@
-# chess
-Library encapsulating chess-related models, classes and services.
+# Solarisin.Chess
+
+Libraries which encapsulate my chess-related models, classes, services and APIs within a nuget package.
