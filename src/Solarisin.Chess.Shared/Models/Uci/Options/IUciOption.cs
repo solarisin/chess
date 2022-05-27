@@ -1,4 +1,6 @@
-﻿namespace Solarisin.Chess.Shared.Models.Uci.Options;
+﻿using Newtonsoft.Json;
+
+namespace Solarisin.Chess.Shared.Models.Uci.Options;
 
 public interface IUciOption
 {
@@ -10,7 +12,13 @@ public interface IUciOption
 
     public string Value { get; set; }
 
-    public static IUciOption? CreateOption(string optionString)
+    /// <summary>
+    ///     Static factory method for creating a new uci option from engine output
+    /// </summary>
+    /// <param name="optionString">The option string to parse</param>
+    /// <returns>A new uci option</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the option type could not be parsed</exception>
+    public static IUciOption CreateOption(string optionString)
     {
         // examples:
         // option name Debug Log File type string default

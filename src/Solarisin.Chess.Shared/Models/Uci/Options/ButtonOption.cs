@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace Solarisin.Chess.Shared.Models.Uci.Options;
 
 public class ButtonOption : IUciOption
@@ -8,15 +10,16 @@ public class ButtonOption : IUciOption
         Type = OptionType.Button;
     }
 
-    public string Name { get; set; }
+    [JsonProperty(Order = 1)] public string Name { get; set; }
 
-    public OptionType Type { get; set; }
+    [JsonProperty(Order = 2)] public OptionType Type { get; set; }
 
+    [JsonIgnore]
     public string Value
     {
         get => "";
         set => throw new InvalidOperationException("Button options do not have a value");
     }
 
-    public string Default => "";
+    [JsonIgnore] public string Default => "";
 }

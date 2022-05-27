@@ -7,9 +7,19 @@ using Solarisin.Core.Extensions;
 
 namespace Solarisin.Chess.Shared.Services;
 
+/// <summary>
+///     Implementation of the <see cref="IUciEngineService" /> interface using the stockfish engine
+/// </summary>
 public class StockfishEngineService : IUciEngineService
 {
-    public StockfishEngineService(IUciRunnerService runner, IOptions<EnvironmentOptions> environmentOptions,
+    /// <summary>
+    ///     Constructor for an instance of the <see cref="StockfishEngineService" /> class
+    /// </summary>
+    /// <param name="runner">The runner service used to run the stockfish engine</param>
+    /// <param name="environmentOptions">The environment options</param>
+    /// <param name="engineOptions">The engine options</param>
+    public StockfishEngineService(IUciRunnerService runner,
+        IOptions<EnvironmentOptions> environmentOptions,
         IOptions<EngineOptions> engineOptions)
     {
         EnvironmentOptions = environmentOptions.Value;
@@ -17,10 +27,15 @@ public class StockfishEngineService : IUciEngineService
         UciRunnerService = runner;
     }
 
-    public IUciRunnerService UciRunnerService { get; }
-    public EnvironmentOptions EnvironmentOptions { get; set; }
-    public EngineOptions EngineOptions { get; set; }
+    private IUciRunnerService UciRunnerService { get; }
+    private EnvironmentOptions EnvironmentOptions { get; }
+    private EngineOptions EngineOptions { get; }
 
+    /// <summary>
+    ///     Identify the stockfish engine
+    /// </summary>
+    /// <returns>The identity information of the stockfish engine</returns>
+    /// <exception cref="InvalidOperationException">If the engine environment configuration is invalid</exception>
     public async Task<EngineIdentity> Identify()
     {
         /*
@@ -52,8 +67,6 @@ public class StockfishEngineService : IUciEngineService
         uciok
         */
 
-        // Parse the response
-        // break the response into lines
         List<string> lines;
         try
         {
@@ -99,56 +112,61 @@ public class StockfishEngineService : IUciEngineService
         return id;
     }
 
-    public Task<List<IUciOption>> ListOptions()
+    /// <summary>
+    ///     List the available uci options and their values within the stockfish engine
+    /// </summary>
+    /// <returns>The available stockfish uci options</returns>
+    public async Task<List<IUciOption>> ListOptions()
     {
-        throw new NotImplementedException();
-
-        /*
-        var lines = response.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
+        var lines = await ExecuteRunnerAction(UciRunnerAction.ListOptions);
         lines.PopFirst();
-        
-        // Decode each line, should be either id, option or uciok
-        EngineIdentity id = new();
-        var name = Interpreter.EnumToConsole(ResponseId.Name);
-        var author = Interpreter.EnumToConsole(ResponseId.Author);
-        var option = Interpreter.EnumToConsole(ResponseId.Option);
+
+        // Decode each line, should be only lines starting with option after the runner filter
+        List<IUciOption> options = new();
+        var optionId = Interpreter.EnumToConsole(ResponseId.Option);
         foreach (var line in lines)
-        {
-            if (line.StartsWith(name))
-            {
-                id.Name = line[name.Length..];
-                Log.ForContext<UciService>().Information("Parsed {Console} '{Value}' from option string: '{OptionText}'", name, id.Name, line);
-            }
-            else if (line.StartsWith(author))
-            {
-                id.Author = line[author.Length..];
-                Log.ForContext<UciService>().Information("Parsed {Console} '{Value}' from option string: '{OptionText}'", name, id.Author, line);
-            }
-            else if (line.StartsWith(option))
-            {
-                var createdOption = IUciOption.CreateOption(line);
-                if (createdOption != null)
+            if (line.StartsWith(optionId))
+                try
                 {
-                    InterfaceOptions.UciOptions.Add(createdOption);
-                    Log.ForContext<UciService>()
-                        .ForContext("CreatedOption", createdOption, true)
-                        .Information("Parsed {Console} '{Value}' from option string: '{OptionText}'", option, createdOption.Name, line);
+                    var option = IUciOption.CreateOption(line);
+                    options.Add(option);
+                    Log.ForContext<StockfishEngineService>()
+                        .Information("Parsed {Console} '{Value}' from option string: '{OptionText}'",
+                            optionId, option, line);
                 }
-                else
-                    Log.ForContext<UciService>().Error("Failed to create option from uci response string: '{OptionText}'", line);
-            }
-            else if (line.StartsWith(Interpreter.EnumToConsole(ResponseId.UciOk)))
-            {
-                result = true;
-                break;
-            }
-        }
-        return result;
-        */
+                catch (ArgumentOutOfRangeException e)
+                {
+                    Log.ForContext<StockfishEngineService>()
+                        .ForContext("OptionString", line)
+                        .Error(e, "Failed to create option from option string");
+                }
+            else
+                Log.ForContext<StockfishEngineService>()
+                    .ForContext("ResponseString", line)
+                    .Warning("Unrecognized and unhandled response string from stockfish");
+
+        return options;
     }
 
-    public void Shutdown()
+    /// <summary>
+    ///     Execute the given runner action on the stockfish runner and return the list of output lines
+    /// </summary>
+    /// <param name="action">The action to execute</param>
+    /// <returns>The list of output lines</returns>
+    /// <exception cref="InvalidOperationException">If the engine environment configuration is invalid</exception>
+    private Task<List<string>> ExecuteRunnerAction(UciRunnerAction action)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var builder = new StockfishRunnerOptionsBuilder();
+            builder
+                .AssignAction(action)
+                .UseProcessPath(EnvironmentOptions.BuildProcessPath());
+            return UciRunnerService.RunAsync(builder.Build());
+        }
+        catch (InvalidOperationException e)
+        {
+            throw new InvalidOperationException("Environment configuration is invalid", e);
+        }
     }
 }
