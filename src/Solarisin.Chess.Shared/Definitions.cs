@@ -1,4 +1,19 @@
-﻿namespace Solarisin.Chess.Shared;
+﻿using System.Text.Json.Serialization;
+
+namespace Solarisin.Chess.Shared;
+
+/// <summary>
+/// The possible option namespaces that can be modified by the user
+/// </summary>
+[Serializable]
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum OptionNamespace
+{
+    [JsonPropertyName("engine")]
+    Engine,
+    [JsonPropertyName("environment")]
+    Environment
+}
 
 /// <summary>
 ///     Enumeration of the possible option types in the UCI protocol.
@@ -56,7 +71,10 @@ public enum ResponseId
 /// <summary>
 ///     Enumeration of the supported uci engine implementations.
 /// </summary>
+[Serializable]
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum UciImplementation
 {
+    [JsonPropertyName("stockfish")]
     Stockfish
 }

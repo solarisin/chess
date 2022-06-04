@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace Solarisin.Chess.Shared.Models.Uci.Options;
+﻿namespace Solarisin.Chess.Shared.Models.Uci.Options;
 
 public interface IUciOption
 {

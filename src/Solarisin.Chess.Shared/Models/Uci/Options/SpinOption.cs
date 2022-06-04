@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace Solarisin.Chess.Shared.Models.Uci.Options;
 
@@ -14,28 +14,32 @@ public class SpinOption : IUciOption
         Max = max;
     }
 
-    [JsonProperty(Order = 3)]
     [JsonPropertyName("Value")]
+    [JsonPropertyOrder(3)]
     public int Spin { get; set; }
 
-    [JsonProperty(Order = 4)]
     [JsonPropertyName("DefaultValue")]
+    [JsonPropertyOrder(4)]
     public int DefaultSpin { get; }
 
-    [JsonProperty(Order = 5)] public int Min { get; }
+    [JsonPropertyOrder(5)]
+    public int Min { get; }
 
-    [JsonProperty(Order = 6)] public int Max { get; }
+    [JsonPropertyOrder(6)]
+    public int Max { get; }
 
-    [JsonProperty(Order = 1)] public string Name { get; set; }
+    [JsonPropertyOrder(1)]
+    public string Name { get; set; }
 
-    [JsonProperty(Order = 2)] public OptionType Type { get; }
+    [JsonPropertyOrder(2)]
+    public OptionType Type { get; }
 
-    [Newtonsoft.Json.JsonIgnore]
+    [JsonIgnore]
     public string Value
     {
         get => Spin.ToString();
         set => Spin = int.Parse(value);
     }
 
-    [Newtonsoft.Json.JsonIgnore] public string Default => DefaultSpin.ToString();
+    [JsonIgnore] public string Default => DefaultSpin.ToString();
 }
