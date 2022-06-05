@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 env:
   PROJECT_FOLDER: ./src/Solarisin.Chess.Shared/
-  PROJECT_FILE: Solarisin.Chess.Shared.csproj
+  PROJECT_PATH: ./src/Solarisin.Chess.Shared/Solarisin.Chess.Shared.csproj
 jobs:
   deploy:
     runs-on: ubuntu-latest
