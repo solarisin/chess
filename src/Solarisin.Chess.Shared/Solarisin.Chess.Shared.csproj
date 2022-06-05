@@ -13,6 +13,11 @@
         <RepositoryType>git</RepositoryType>
         <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     </PropertyGroup>
+    
+    <ItemGroup>
+        <None Include="..\..\README.md" Pack="true" Visible="false" PackagePath="" />
+        <None Include="..\..\LICENSE" Pack="true" Visible="false" PackagePath="" />
+    </ItemGroup>
 
     <ItemGroup Condition="$(Configuration)=='Debug'">
         <Reference Include="Solarisin.Core">
