@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Solarisin.Chess.Shared.Models.Uci.Options;
 
 public class ComboOption : IUciOption
@@ -14,12 +16,18 @@ public class ComboOption : IUciOption
         PossibleValues = possibleValues;
     }
 
+    [JsonPropertyOrder(5)]
     public List<string> PossibleValues { get; }
+
+    [JsonPropertyOrder(1)]
     public string Name { get; set; }
 
+    [JsonPropertyOrder(2)]
     public OptionType Type { get; }
 
+    [JsonPropertyOrder(3)]
     public string Value { get; set; }
 
+    [JsonPropertyOrder(4)]
     public string Default { get; }
 }
