@@ -40,17 +40,17 @@ jobs:
           github-secret: ${{ secrets.GITHUB_TOKEN }}
       - name: .NET Build Solution
         run: >
-          dotnet build ${{PROJECT_PATH}}
+          dotnet build $PROJECT_PATH
           -p:Version=${{steps.get-version.outputs.package-version}}
           --configuration Release
       - name: Create the package
         run: >
-          dotnet pack ${{PROJECT_PATH}}
+          dotnet pack $PROJECT_PATH
           -p:PackageVersion=${{steps.get-version.outputs.package-version}}
           --configuration Release
       - name: Publish NuGet package to GitHub
         run: >
-          dotnet nuget push ${{PROJECT_FOLDER}}bin/Release/*.nupkg
+          dotnet nuget push $PROJECT_FOLDERbin/Release/*.nupkg
           --source 'github'
           --api-key '${{ secrets.GITHUB_TOKEN }}'
           --skip-duplicate
