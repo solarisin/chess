@@ -4,6 +4,13 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <Authors>solarisin</Authors>
+        <Description>Library encapsulating chess-related models, classes and services.</Description>
+        <Copyright>Copyright 2022 Rob Longbottom</Copyright>
+        <PackageProjectUrl>https://github.com/solarisin/chess</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/solarisin/chess</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     </PropertyGroup>
 
     <ItemGroup Condition="$(Configuration)=='Debug'">
