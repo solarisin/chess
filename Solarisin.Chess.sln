@@ -1,10 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Solarisin.Chess.Shared", "src\Solarisin.Chess.Shared\Solarisin.Chess.Shared.csproj", "{A78FBBDC-9490-4E32-BDC0-D1E8D779BE87}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33103.201
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Solarisin.Chess.Shared", "src\Solarisin.Chess.Shared\Solarisin.Chess.Shared.csproj", "{A78FBBDC-9490-4E32-BDC0-D1E8D779BE87}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{28E786DA-F271-4BF7-B6F1-B3C1BBD20D66}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		global.json = global.json
 		nuget.config = nuget.config
 		README.md = README.md
 	EndProjectSection
@@ -19,5 +23,8 @@ Global
 		{A78FBBDC-9490-4E32-BDC0-D1E8D779BE87}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A78FBBDC-9490-4E32-BDC0-D1E8D779BE87}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A78FBBDC-9490-4E32-BDC0-D1E8D779BE87}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal
