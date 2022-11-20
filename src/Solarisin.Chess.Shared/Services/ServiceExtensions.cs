@@ -10,7 +10,8 @@ public static class ServiceExtensions
     {
         var environmentSection = configuration.GetSection(EnvironmentOptions.Section);
         var engineSection = configuration.GetSection(EngineOptions.Section);
-        var engineOptions = engineSection.Get<EngineOptions>();
+        var engineOptions = engineSection.Get<EngineOptions>()
+                            ?? throw new InvalidOperationException($"'EngineOptions' configuration section not found.");
 
         // Configure the IOptions interfaces with the settings
         services.Configure<EnvironmentOptions>(environmentSection);
